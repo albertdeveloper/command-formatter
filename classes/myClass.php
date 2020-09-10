@@ -1,4 +1,5 @@
 <?php
+
 interface CommandInterface
 {
     public function process($actual_link, $fileNameOnly, $toConvertFormat);
