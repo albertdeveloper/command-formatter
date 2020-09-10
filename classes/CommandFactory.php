@@ -9,6 +9,8 @@ class CommandFactory
             return new JSON();
         elseif ($type == 'csv')
             return new CSV();
+        elseif ($type == 'yaml')
+            return new YAML();
         
         echo 'Unsupported type';
     }

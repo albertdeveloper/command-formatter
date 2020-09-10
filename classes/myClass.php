@@ -15,6 +15,8 @@ class CSV implements CommandInterface
     
     public function convertTo($actual_location, $fileNameOnly, $toConvertFormat)
     {
+        $fileFormat = $fileNameOnly . '.' . $toConvertFormat;
+
         if ($toConvertFormat == 'json') {
             if (!($fp = fopen($actual_location, 'r'))) {
                 die("Can't open file...");
@@ -26,7 +28,7 @@ class CSV implements CommandInterface
                 $json[] = array_combine($key, $row);
             }
             fclose($fp);
-            file_put_contents($fileNameOnly . '.' . $toConvertFormat, json_encode($json));
+            file_put_contents($fileFormat, json_encode($json));
         }
         
         if ($toConvertFormat == 'yaml') {
@@ -57,9 +59,11 @@ class CSV implements CommandInterface
                 }
             }
             fclose($file);
-            
-            file_put_contents($fileNameOnly . '.' . $toConvertFormat, $yml);
+         
+            file_put_contents($fileFormat, $yml);
+         
         }
+        echo $fileFormat .' - created';
     }
 }
 
@@ -72,6 +76,8 @@ class JSON implements CommandInterface
     
     function convertTo($jfilename, $fileNameOnly, $toConvertFormat)
     {
+        $fileFormat = $fileNameOnly . '.' . $toConvertFormat;
+
         if ($toConvertFormat == 'csv') {
             $cfilename = $fileNameOnly . '.' . $toConvertFormat;
             if (($json = file_get_contents($jfilename)) == false)
@@ -117,8 +123,17 @@ class JSON implements CommandInterface
                     $yml .= "{$indent}{$key}: {$value}\n";
                 }
             }
-            file_put_contents($fileNameOnly . '.' . $toConvertFormat, $yml);
+           
+            file_put_contents($fileFormat, $yml);
         }
+      
+        echo $fileFormat .' - created';
     }
+}
+
+class YAML implements CommandInterface
+{
+    public function process($actual_link, $fileNameOnly, $toConvertFormat){}
+    public function convertTo($actual_link, $fileNameOnly, $toConvertFormat){}
 }
 ?>
