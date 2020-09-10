@@ -119,6 +119,5 @@ class JSON implements CommandInterface
             file_put_contents($fileNameOnly . '.' . $toConvertFormat, $yml);
         }
     }
-    
 }
 ?>
