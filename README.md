@@ -25,4 +25,8 @@
 
 
 ## Important Note
-1. Use CMD 
+1. Use CMD
+2. PHP 7.2+ up
+
+
+ 
