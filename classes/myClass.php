@@ -16,7 +16,7 @@ class CSV implements CommandInterface
     public function convertTo($actual_location, $fileNameOnly, $toConvertFormat)
     {
         $fileFormat = $fileNameOnly . '.' . $toConvertFormat;
-
+        
         if ($toConvertFormat == 'json') {
             if (!($fp = fopen($actual_location, 'r'))) {
                 die("Can't open file...");
@@ -59,11 +59,11 @@ class CSV implements CommandInterface
                 }
             }
             fclose($file);
-         
+            
             file_put_contents($fileFormat, $yml);
-         
+            
         }
-        echo $fileFormat .' - created';
+        echo $fileFormat . ' - created';
     }
 }
 
@@ -77,7 +77,7 @@ class JSON implements CommandInterface
     function convertTo($jfilename, $fileNameOnly, $toConvertFormat)
     {
         $fileFormat = $fileNameOnly . '.' . $toConvertFormat;
-
+        
         if ($toConvertFormat == 'csv') {
             $cfilename = $fileNameOnly . '.' . $toConvertFormat;
             if (($json = file_get_contents($jfilename)) == false)
@@ -123,98 +123,64 @@ class JSON implements CommandInterface
                     $yml .= "{$indent}{$key}: {$value}\n";
                 }
             }
-           
+            
             file_put_contents($fileFormat, $yml);
         }
-      
-        echo $fileFormat .' - created';
+        
+        echo $fileFormat . ' - created';
     }
 }
 
 class YAML implements CommandInterface
 {
-    public function process($actual_link, $fileNameOnly, $toConvertFormat){
+    public function process($actual_link, $fileNameOnly, $toConvertFormat)
+    {
         $this->convertTo($actual_link, $fileNameOnly, $toConvertFormat);
     }
-    public function convertTo($actual_link, $fileNameOnly, $toConvertFormat){
-        $fileFormat = $fileNameOnly . '.' . $toConvertFormat;
-
-        $fp     = file_get_contents($actual_link);
-        $datas = explode("–",$fp);
-        $array = array();
-
-        if($toConvertFormat == 'json')
-        {
-
-        foreach($datas as $key => $data)
-        {
-            if($data !== '') {
-                    $parts =  explode("\n",$data);
-                    foreach($parts as $k =>$yml)
-                    {
-                        if(!empty($yml) && $yml !== '–')
-                        {
-                        $convertToArray = explode(":", $yml);
-                        
-                        $convertToArray[0] = trim($convertToArray[0]);
-                        $convertToArray[1] = trim($convertToArray[1]);
-                        $array[$key][$convertToArray[0]] = $convertToArray[1];
-                        }
-                        
-                    }   
-            }
-        }
-            
-            file_put_contents($fileFormat, json_encode($array));
-    }
-
-    if($toConvertFormat == 'csv')
+    public function convertTo($actual_link, $fileNameOnly, $toConvertFormat)
     {
-        $cfilename = $fileNameOnly . '.' . $toConvertFormat;
-        $header = false;
+        $fileFormat = $fileNameOnly . '.' . $toConvertFormat;
+        $header     = false;
+        
+        $fp    = file_get_contents($actual_link);
+        $datas = explode("–", $fp);
         $array = array();
-
-        foreach($datas as $key => $data)
-        {
-            if($data !== '') {
-                    $parts =  explode("\n",$data);
-                    foreach($parts as $k =>$yml)
-                    {
-                        if(!empty($yml) && $yml !== '–')
-                        {
+        
+        foreach ($datas as $key => $data) {
+            if ($data !== '') {
+                $parts = explode("\n", $data);
+                foreach ($parts as $k => $yml) {
+                    if (!empty($yml) && $yml !== '–') {
                         $convertToArray = explode(":", $yml);
                         
-                        $convertToArray[0] = trim($convertToArray[0]);
-                        $convertToArray[1] = trim($convertToArray[1]);
+                        $convertToArray[0]               = trim($convertToArray[0]);
+                        $convertToArray[1]               = trim($convertToArray[1]);
                         $array[$key][$convertToArray[0]] = $convertToArray[1];
-                        }
-                        
                     }
- 
-                       
+                    
+                }
             }
         }
-        $encode = json_encode($array);
-         
-
-        $data = json_decode($encode,true);
-        $fp     = fopen($cfilename, 'w');
- 
-         
-        foreach ($data as $row) {
-            if (empty($header)) {
-                $header = array_keys($row);
-                fputcsv($fp, $header);
-                $header = array_flip($header);
-            }
-            fputcsv($fp, array_merge($header, $row));
+        
+        if ($toConvertFormat == 'json') {
+            file_put_contents($fileFormat, json_encode($array));
         }
-        fclose($fp);
-    }
-
-     
-    echo $fileFormat .' - created';
-            
+        
+        if ($toConvertFormat == 'csv') {
+            $data = json_decode(json_encode($array), true);
+            $fp   = fopen($fileFormat, 'w');
+            foreach ($data as $row) {
+                if (empty($header)) {
+                    $header = array_keys($row);
+                    fputcsv($fp, $header);
+                    $header = array_flip($header);
+                }
+                fputcsv($fp, array_merge($header, $row));
+            }
+            fclose($fp);
+        }
+        echo $fileFormat . ' - created';
+        
     }
 }
 ?>
