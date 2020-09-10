@@ -15,7 +15,7 @@ class CSV implements CommandInterface
     public function convertTo($actual_location, $fileNameOnly, $toConvertFormat)
     {
         if ($toConvertFormat == 'json') {
-            if (!($fp = fopen($fname, 'r'))) {
+            if (!($fp = fopen($actual_location, 'r'))) {
                 die("Can't open file...");
             }
             $key = fgetcsv($fp, "1024", ",");
