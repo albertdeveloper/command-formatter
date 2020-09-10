@@ -116,7 +116,7 @@ class JSON implements CommandInterface
                     exit;
                 }
                 
-                $yml .= "-\n";
+                $yml .= "–\n";
                 $arr = array_combine($header, $row);
                 
                 foreach ($arr as $key => $value) {
@@ -133,7 +133,88 @@ class JSON implements CommandInterface
 
 class YAML implements CommandInterface
 {
-    public function process($actual_link, $fileNameOnly, $toConvertFormat){}
-    public function convertTo($actual_link, $fileNameOnly, $toConvertFormat){}
+    public function process($actual_link, $fileNameOnly, $toConvertFormat){
+        $this->convertTo($actual_link, $fileNameOnly, $toConvertFormat);
+    }
+    public function convertTo($actual_link, $fileNameOnly, $toConvertFormat){
+        $fileFormat = $fileNameOnly . '.' . $toConvertFormat;
+
+        $fp     = file_get_contents($actual_link);
+        $datas = explode("–",$fp);
+        $array = array();
+
+        if($toConvertFormat == 'json')
+        {
+
+        foreach($datas as $key => $data)
+        {
+            if($data !== '') {
+                    $parts =  explode("\n",$data);
+                    foreach($parts as $k =>$yml)
+                    {
+                        if(!empty($yml) && $yml !== '–')
+                        {
+                        $convertToArray = explode(":", $yml);
+                        
+                        $convertToArray[0] = trim($convertToArray[0]);
+                        $convertToArray[1] = trim($convertToArray[1]);
+                        $array[$key][$convertToArray[0]] = $convertToArray[1];
+                        }
+                        
+                    }   
+            }
+        }
+            
+            file_put_contents($fileFormat, json_encode($array));
+    }
+
+    if($toConvertFormat == 'csv')
+    {
+        $cfilename = $fileNameOnly . '.' . $toConvertFormat;
+        $header = false;
+        $array = array();
+
+        foreach($datas as $key => $data)
+        {
+            if($data !== '') {
+                    $parts =  explode("\n",$data);
+                    foreach($parts as $k =>$yml)
+                    {
+                        if(!empty($yml) && $yml !== '–')
+                        {
+                        $convertToArray = explode(":", $yml);
+                        
+                        $convertToArray[0] = trim($convertToArray[0]);
+                        $convertToArray[1] = trim($convertToArray[1]);
+                        $array[$key][$convertToArray[0]] = $convertToArray[1];
+                        }
+                        
+                    }
+ 
+                       
+            }
+        }
+        $encode = json_encode($array);
+         
+
+        $data = json_decode($encode,true);
+        $fp     = fopen($cfilename, 'w');
+ 
+         
+        foreach ($data as $row) {
+            if (empty($header)) {
+                $header = array_keys($row);
+                fputcsv($fp, $header);
+                $header = array_flip($header);
+            }
+            fputcsv($fp, array_merge($header, $row));
+        }
+        fclose($fp);
+    }
+
+     
+    echo $fileFormat .' - created';
+            
+    }
 }
 ?>
