@@ -50,7 +50,7 @@ class CSV implements CommandInterface
                         exit;
                     }
                     
-                    $yml .= "-\n";
+                    $yml .= "–\n";
                     $arr = array_combine($keys, $values);
                     
                     foreach ($arr as $key => $value) {
