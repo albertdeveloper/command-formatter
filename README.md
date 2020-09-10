@@ -22,3 +22,7 @@
 5. To run on Http network run “php command.php http://sample.localhost/customers.json” then make sure the path exists vhosts if your doing localhost;
  
  ```
+
+
+## Important Note
+1. Use CMD 
