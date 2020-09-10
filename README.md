@@ -1,6 +1,6 @@
 # command-formatter
 
-# Direction to use;
+## Direction to use
  
  ```
 1. Open command line the go to the folder where the command file is.
