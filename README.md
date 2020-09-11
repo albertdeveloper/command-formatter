@@ -1,4 +1,5 @@
 # command-formatter
+Simple convertion format for JSON,CSV,YAML to each other
 
 ## Direction to use
  
